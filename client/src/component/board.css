@@ -1,15 +1,16 @@
 .App {
   width: 500px;
-  height: 500px;
+  height: 600px;
   margin: 0 auto;
+  background-color: aqua;
 }
 
 .puzzle {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1px;
-  width: 400px;
-  height: 400px;
+  width: 500px;
+  height: 500px;
   border: 1px solid black;
 }
 
