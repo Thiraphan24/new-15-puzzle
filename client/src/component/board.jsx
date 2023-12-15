@@ -24,6 +24,7 @@ const Board = () => {
   const [score, setScore] = useState(0);
   const [rank, setRank] = useState([]);
   const [paused, setPaused] = useState(true);
+  const [winner, setWinner] = useState(false);
 
   // สุ่มจัดเรียงรูป
   useEffect(() => {
@@ -79,10 +80,10 @@ const Board = () => {
       (areInSameColumn && Math.abs(index1 - index2) === rowSize)
     );
   };
-
   const isSolved = (currentPuzzle) => {
     for (let i = 0; i < currentPuzzle.length - 1; i++) {
-      if (currentPuzzle[i] !== i + 1) {
+      // Check if the current element is an image with the correct src attribute
+      if (currentPuzzle[i].props.src !== `${i + 1}.jpg`) {
         return false;
       }
     }
@@ -103,7 +104,7 @@ const Board = () => {
   };
 
   const shufflePuzzle = () => {
-    const shuffledPuzzle = [...puzzle].sort(() => Math.random() - 0.5);
+    const shuffledPuzzle = [...puzzle].sort(() => Math.random() - 0.9);
     if (!isSolvable(shuffledPuzzle)) {
       shufflePuzzle();
     } else {
@@ -128,6 +129,18 @@ const Board = () => {
       return count;
     }, 0);
     return inversions % 2 === 0;
+  };
+
+  const checkWinner = () => {
+    if (isSolved(puzzle)) {
+      setWinner(true);
+      setPaused(true);
+      alert(
+        `Congratulations! You've won. Your time is ${convert(
+          Math.floor(time / 60)
+        )}:${convert(time % 60)}`
+      );
+    }
   };
 
   const convert = (value) => (value < 10 ? `0${value}` : value);
@@ -165,8 +178,5 @@ const Board = () => {
     </div>
   );
 };
-
-// Helper function to convert single-digit minutes/seconds to double digits
-const convert = (value) => (value < 10 ? `0${value}` : value);
 
 export default Board;
