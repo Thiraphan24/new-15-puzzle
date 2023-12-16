@@ -13,13 +13,16 @@ function Login() {
 
     try {
       // Make an API request for user authentication
-      const response = await axios.post("/api/login", {
+      const response = await axios.post("http://localhost:3003/login", {
         name,
         password,
       });
 
-      // Handle successful login (e.g., redirect to another page)
+      // Handle successful login
       console.log("Login successful:", response.data);
+
+      // Redirect to the board page and pass the user's name as state
+      navigate("/board", { state: { name: response.data.name } });
     } catch (error) {
       // Handle login failure (e.g., display an error message)
       console.error("Login failed:", error.response.data);

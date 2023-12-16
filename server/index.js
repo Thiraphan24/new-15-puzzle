@@ -52,6 +52,30 @@ app.post("/register", (req, res) => {
     });
 });
 
+// Login endpoint
+app.post("/login", (req, res) => {
+  const { name, password } = req.body;
+
+  // Check if the user with the provided name exists
+  RegisterModel.findOne({ name: name })
+    .then((user) => {
+      if (!user) {
+        res.status(401).json("User not found");
+      } else {
+        // Check if the password matches
+        if (user.password === password) {
+          res.json("Login successful");
+        } else {
+          res.status(401).json("Incorrect password");
+        }
+      }
+    })
+    .catch((err) => {
+      console.log("Error checking user for login:", err);
+      res.status(500).json("Internal Server Error");
+    });
+});
+
 // กำหนด Port ที่ Server จะใช้
 const port = 3003;
 app.listen(port, () => {
