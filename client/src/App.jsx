@@ -1,17 +1,19 @@
-import { useState } from "react";
-import "./App.css";
-import Board from "./component/board";
+import React, { Component } from "react";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Register from "./component/Register";
+import Board from "./component/board";
 
-function App() {
-  const [count, setCount] = useState(0);
-
-  return (
-    <div>
-      {/* <Board /> */}
-      <Register />
-    </div>
-  );
+class App extends Component {
+  render() {
+    return (
+      <BrowserRouter>
+        <Switch>
+          <Route path="/" component={Register} />
+          <Route path="/board" component={Board} />
+        </Switch>
+      </BrowserRouter>
+    );
+  }
 }
 
 export default App;
