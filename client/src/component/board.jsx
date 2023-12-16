@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./board.css";
+import Swal from "sweetalert";
+import Leaderboard from "./Leaderboard";
 
 const Board = () => {
   const [puzzle, setPuzzle] = useState([
@@ -30,6 +32,10 @@ const Board = () => {
   useEffect(() => {
     shufflePuzzle();
   }, []);
+
+  const resetTime = () => {
+    setTime(0);
+  };
 
   // จับเวลา
   useEffect(() => {
@@ -101,10 +107,20 @@ const Board = () => {
       },
       ...rank,
     ]);
+    setPaused(true); // Stop the timer
+    shufflePuzzle(true);
+    Swal({
+      title: "Congratulations!",
+      text: `You won! Your time is ${convert(Math.floor(time / 60))}:${convert(
+        time % 60
+      )}`,
+      icon: "success",
+    });
+    resetTime(true);
   };
 
   const shufflePuzzle = () => {
-    const shuffledPuzzle = [...puzzle].sort(() => Math.random() - 0.9);
+    const shuffledPuzzle = [...puzzle].sort(() => Math.random() - 0.5);
     if (!isSolvable(shuffledPuzzle)) {
       shufflePuzzle();
     } else {
@@ -131,50 +147,42 @@ const Board = () => {
     return inversions % 2 === 0;
   };
 
-  const checkWinner = () => {
-    if (isSolved(puzzle)) {
-      setWinner(true);
-      setPaused(true);
-      alert(
-        `Congratulations! You've won. Your time is ${convert(
-          Math.floor(time / 60)
-        )}:${convert(time % 60)}`
-      );
-    }
-  };
-
   const convert = (value) => (value < 10 ? `0${value}` : value);
 
   return (
-    <div className="App">
-      <header>
-        <h1>15puzzle</h1>
-        <div className="timer">
-          เวลา: {convert(Math.floor(time / 60))}:{convert(time % 60)}
-        </div>
-        <div className="move-sum">move: {score}</div>
-      </header>
-      <div className="puzzle">
-        {puzzle.map((item, index) => (
-          <div
-            key={index}
-            className={`tile ${item === "Empty" ? "empty" : ""}`}
-            onClick={() => move(index)}
-          >
-            {item}
+    <div className="container">
+      <img className="dog" src="dog.jpg" width={300} height={300} />
+      <div className="App">
+        <header>
+          <h1>15puzzle</h1>
+          <div className="timer">
+            เวลา: {convert(Math.floor(time / 60))}:{convert(time % 60)}
           </div>
-        ))}
+          <div className="move-sum">move: {score}</div>
+        </header>
+        <div className="puzzle">
+          {puzzle.map((item, index) => (
+            <div
+              key={index}
+              className={`tile ${item === "Empty" ? "empty" : ""}`}
+              onClick={() => move(index)}
+            >
+              {item}
+            </div>
+          ))}
+        </div>
+        <button onClick={recordScore}>บันทึกคะแนน</button>
+        <button onClick={startGame}>เริ่มเกม</button>{" "}
+        {/* Add a button to start the game */}
+        <ul className="rank">
+          {rank.map((item, index) => (
+            <li key={index}>
+              {item.score} วินาที (เวลา: {item.time})
+            </li>
+          ))}
+        </ul>
       </div>
-      <button onClick={recordScore}>บันทึกคะแนน</button>
-      <button onClick={startGame}>เริ่มเกม</button>{" "}
-      {/* Add a button to start the game */}
-      <ul className="rank">
-        {rank.map((item, index) => (
-          <li key={index}>
-            {item.score} วินาที (เวลา: {item.time})
-          </li>
-        ))}
-      </ul>
+      <Leaderboard rank={rank} />
     </div>
   );
 };
