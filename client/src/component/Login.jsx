@@ -1,10 +1,12 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,7 +28,7 @@ function Login() {
 
   const handleRegister = () => {
     // Handle the registration process (e.g., navigate to the registration page)
-    console.log("Navigate to registration page");
+    navigate("/");
   };
 
   return (
@@ -72,12 +74,12 @@ function Login() {
           </form>
 
           <p>You don't have an account yet.</p>
-          {/* <button
+          <button
             className="btn btn-default border w-100 bg-light rounded-0 text-decoration-none"
             onClick={handleRegister}
           >
             Register
-          </button> */}
+          </button>
         </div>
       </div>
     </div>

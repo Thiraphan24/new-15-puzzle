@@ -23,18 +23,23 @@ mongoose
 const RegisterModel = require("./models/Register");
 
 // สร้าง API Endpoint สำหรับลงทะเบียน
+// ... (your existing imports and setup)
+
 app.post("/register", (req, res) => {
   const { name, email, password } = req.body;
 
-  // ตรวจสอบว่ามีบัญชีนี้อยู่แล้วหรือไม่
+  // Set a default value of null for the time field
+  const defaultTime = null;
+
+  // Check if the email already exists
   RegisterModel.findOne({ email: email })
     .then((user) => {
       if (user) {
         res.json("Already have an account");
       } else {
-        // สร้างบัญชีใหม่
-        RegisterModel.create({ name: name, email: email, password: password })
-          .then((result) => res.json("Account created"))
+        // Create a new user with the default value of null for the time field
+        RegisterModel.create({ name, email, password, time: defaultTime })
+          .then(() => res.json("Account created"))
           .catch((err) => {
             console.log("Error creating account:", err);
             res.status(500).json("Internal Server Error");
