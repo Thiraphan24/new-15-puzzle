@@ -100,28 +100,28 @@ const Board = (props) => {
     return true;
   };
 
-  const recordScore = () => {
-    const newScore = time + score;
-    setScore(newScore);
+  // const recordScore = () => {
+  //   const newScore = time + score;
+  //   setScore(newScore);
 
-    setRank([
-      {
-        score: newScore,
-        time: time,
-      },
-      ...rank,
-    ]);
-    setPaused(true); // Stop the timer
-    shufflePuzzle(true);
-    Swal({
-      title: "Congratulations!",
-      text: `You won! Your time is ${convert(Math.floor(time / 60))}:${convert(
-        time % 60
-      )}`,
-      icon: "success",
-    });
-    resetTime(true);
-  };
+  //   setRank([
+  //     {
+  //       score: newScore,
+  //       time: time,
+  //     },
+  //     ...rank,
+  //   ]);
+  //   setPaused(true); // Stop the timer
+  //   shufflePuzzle(true);
+  //   Swal({
+  //     title: "Congratulations!",
+  //     text: `You won! Your time is ${convert(Math.floor(time / 60))}:${convert(
+  //       time % 60
+  //     )}`,
+  //     icon: "success",
+  //   });
+  //   resetTime(true);
+  // };
 
   const shufflePuzzle = () => {
     const shuffledPuzzle = [...puzzle].sort(() => Math.random() - 0.5);
@@ -158,12 +158,17 @@ const Board = (props) => {
       <img className="dog" src="dog.jpg" width={300} height={300} />
       <div className="App">
         <header>
-          <h1>15puzzle</h1>
-          <h1>Welcome, {name}!</h1>
-          <div className="timer">
-            เวลา: {convert(Math.floor(time / 60))}:{convert(time % 60)}
+          <div>
+            <span className="welcome-message">Welcome, {name}!</span>
+            <h1>15puzzle</h1>
           </div>
-          <div className="move-sum">move: {score}</div>
+
+          <div className="timer">
+            Time: {convert(Math.floor(time / 60))}:{convert(time % 60)}
+          </div>
+          <div className="move-sum">
+            My best time: {convert(Math.floor(time / 60))}:{convert(time % 60)}
+          </div>
         </header>
         <div className="puzzle">
           {puzzle.map((item, index) => (
@@ -176,8 +181,12 @@ const Board = (props) => {
             </div>
           ))}
         </div>
-        <button onClick={recordScore}>บันทึกคะแนน</button>
-        <button onClick={startGame}>เริ่มเกม</button>{" "}
+        {/* <button onClick={recordScore}>บันทึกคะแนน</button> */}
+        <div className="container-button">
+          <button onClick={startGame}>Start</button>{" "}
+          <button onClick={startGame}>Restart</button>
+        </div>
+
         {/* Add a button to start the game */}
         <ul className="rank">
           {rank.map((item, index) => (

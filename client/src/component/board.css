@@ -73,7 +73,8 @@
 
 header {
   display: flex;
-  margin-left: 150px;
+  margin-left: 90px;
+  margin-right: 40px;
 }
 
 .timer {
@@ -90,4 +91,53 @@ header {
   background-color: #eee;
   text-align: center;
   font-size: 20px;
+}
+
+.App h1 {
+  font-weight: bold;
+  font-size: 80px;
+}
+
+/* Add styles for the welcome message */
+.welcome-message {
+  font-size: 1.2em; /* Adjust the font size as needed */
+  font-weight: bold; /* Make the text bold */
+  color: #333; /* Set the text color */
+  /* Add any other styles you want */
+}
+
+.static {
+  display: flex;
+}
+
+.mytime {
+  width: 100px;
+  height: 50px;
+  border-radius: 5px;
+  background-color: #eee;
+  text-align: center;
+  font-size: 20px;
+}
+
+/* Add styles for the buttons */
+button {
+  width: 100px;
+  height: 50px;
+  border-radius: 5px;
+  background-color: #eee;
+  text-align: center;
+  font-size: 20px;
+  margin: 10px; /* Add margin to create space between buttons */
+}
+
+/* Center the buttons */
+button.start-game,
+button.restart-game {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+.container-button {
+  text-align: center;
 }
