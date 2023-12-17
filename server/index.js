@@ -64,7 +64,8 @@ app.post("/login", (req, res) => {
       } else {
         // Check if the password matches
         if (user.password === password) {
-          res.json("Login successful");
+          // Return the user's name in the response
+          res.json({ name: user.name, message: "Login successful" });
         } else {
           res.status(401).json("Incorrect password");
         }

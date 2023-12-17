@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import "./board.css";
 import Swal from "sweetalert";
 import Leaderboard from "./Leaderboard";
 
-const Board = () => {
+const Board = (props) => {
+  const location = useLocation();
+  console.log("Location state:", location.state);
+  const { name } = location.state || {};
   const [puzzle, setPuzzle] = useState([
     <img src="1.jpg" alt="1" />,
     <img src="2.jpg" alt="2" />,
@@ -155,6 +159,7 @@ const Board = () => {
       <div className="App">
         <header>
           <h1>15puzzle</h1>
+          <h1>Welcome, {name}!</h1>
           <div className="timer">
             เวลา: {convert(Math.floor(time / 60))}:{convert(time % 60)}
           </div>

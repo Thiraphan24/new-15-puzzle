@@ -18,11 +18,16 @@ function Login() {
         password,
       });
 
-      // Handle successful login
-      console.log("Login successful:", response.data);
+      // Log the entire response.data object
+      console.log("Response data:", response.data);
 
-      // Redirect to the board page and pass the user's name as state
-      navigate("/board", { state: { name: response.data.name } });
+      // Handle successful login
+      if (response.data.name) {
+        // Redirect to the board page and pass the user's name as state
+        navigate("/board", { state: { name: response.data.name } });
+      } else {
+        console.error("Name is undefined in the response data");
+      }
     } catch (error) {
       // Handle login failure (e.g., display an error message)
       console.error("Login failed:", error.response.data);
