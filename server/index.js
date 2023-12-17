@@ -6,6 +6,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const convertIsoDateToMinutesSeconds = (isoDate) => {
+  const date = new Date(isoDate);
+  const minutes = date.getUTCMinutes();
+  const seconds = date.getUTCSeconds();
+  return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+};
+
 // การเชื่อมต่อ MongoDB
 mongoose
   .connect("mongodb://127.0.0.1:27017/15Puzzle", {
@@ -76,6 +83,69 @@ app.post("/login", (req, res) => {
       res.status(500).json("Internal Server Error");
     });
 });
+
+app.post("/updateBestTime", async (req, res) => {
+  const { name, newBestTime } = req.body;
+
+  try {
+    // Find the user by name
+    const user = await RegisterModel.findOne({ name });
+
+    // If the user is found
+    if (user) {
+      // Convert current best time from ISODate to "mm:ss"
+      const currentBestTime = user.time
+        ? convertIsoDateToMinutesSeconds(user.time)
+        : null;
+
+      // If the new time is less than the current best time or the best time is null
+      if (!user.time || newBestTime < user.time) {
+        // Update the best time
+        await RegisterModel.updateOne({ name }, { time: newBestTime });
+        res.json({ message: "Best time updated successfully" });
+      } else {
+        res.json({
+          message: `Best time not updated. New time (${newBestTime}) is not faster than current best time (${currentBestTime}).`,
+        });
+      }
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    console.error("Error updating best time:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// Add this endpoint to your Express server
+app.get("/leaderboard", async (req, res) => {
+  try {
+    // Find users with non-null time, sort by time in ascending order
+    const users = await RegisterModel.find({ time: { $ne: null } })
+      .sort({ time: 1 })
+      .limit(5); // Limit to top 5 users
+
+    // Format time as "mm:ss" and construct the response
+    const leaderboardData = users.map((user, index) => ({
+      rank: index + 1,
+      name: user.name,
+      time: formatTime(user.time),
+    }));
+
+    res.json(leaderboardData);
+  } catch (error) {
+    console.error("Error fetching leaderboard data:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// Helper function to format time as "mm:ss"
+const formatTime = (isoDate) => {
+  const date = new Date(isoDate);
+  const minutes = date.getUTCMinutes();
+  const seconds = date.getUTCSeconds();
+  return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+};
 
 // กำหนด Port ที่ Server จะใช้
 const port = 3003;

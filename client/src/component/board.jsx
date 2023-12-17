@@ -101,12 +101,8 @@ const Board = (props) => {
   };
 
   // const recordScore = () => {
-  //   const newScore = time + score;
-  //   setScore(newScore);
-
   //   setRank([
   //     {
-  //       score: newScore,
   //       time: time,
   //     },
   //     ...rank,
@@ -123,8 +119,53 @@ const Board = (props) => {
   //   resetTime(true);
   // };
 
+  const recordScore = async () => {
+    setRank([
+      {
+        time: convertTimeFormat(time), // Convert the Date object to "mm:ss" format
+      },
+      ...rank,
+    ]);
+
+    // Update the best time in the server
+    try {
+      const response = await fetch("http://localhost:3003/updateBestTime", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: name,
+          newBestTime: time,
+        }),
+      });
+
+      const data = await response.json();
+      console.log(data.message);
+    } catch (error) {
+      console.error("Error updating best time:", error);
+    }
+
+    setPaused(true);
+    shufflePuzzle(true);
+    Swal({
+      title: "Congratulations!",
+      text: `You won! Your time is ${convert(Math.floor(time / 60))}:${convert(
+        time % 60
+      )}`,
+      icon: "success",
+    });
+    resetTime(true);
+  };
+
+  const convertTimeFormat = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${convert(minutes)}:${convert(seconds)}`;
+  };
+
   const shufflePuzzle = () => {
-    const shuffledPuzzle = [...puzzle].sort(() => Math.random() - 0.5);
+    const shuffledPuzzle = [...puzzle].sort(() => Math.random() - 0.9);
     if (!isSolvable(shuffledPuzzle)) {
       shufflePuzzle();
     } else {
@@ -186,17 +227,8 @@ const Board = (props) => {
           <button onClick={startGame}>Start</button>{" "}
           <button onClick={startGame}>Restart</button>
         </div>
-
-        {/* Add a button to start the game */}
-        <ul className="rank">
-          {rank.map((item, index) => (
-            <li key={index}>
-              {item.score} วินาที (เวลา: {item.time})
-            </li>
-          ))}
-        </ul>
       </div>
-      <Leaderboard rank={rank} />
+      <Leaderboard />
     </div>
   );
 };
