@@ -7,10 +7,14 @@ app.use(cors());
 app.use(express.json());
 
 const convertIsoDateToMinutesSeconds = (isoDate) => {
+  if (!isoDate) {
+    return "Invalid Time";
+  }
+
   const date = new Date(isoDate);
   const minutes = date.getUTCMinutes();
   const seconds = date.getUTCSeconds();
-  return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  return `${minutes}:${seconds < 10 ? "0" : ""}${seconds.toFixed(2)}`;
 };
 
 // การเชื่อมต่อ MongoDB
@@ -129,7 +133,7 @@ app.get("/leaderboard", async (req, res) => {
     const leaderboardData = users.map((user, index) => ({
       rank: index + 1,
       name: user.name,
-      time: formatTime(user.time),
+      time: convertIsoDateToMinutesSeconds(user.time),
     }));
 
     res.json(leaderboardData);
@@ -138,14 +142,6 @@ app.get("/leaderboard", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-
-// Helper function to format time as "mm:ss"
-const formatTime = (isoDate) => {
-  const date = new Date(isoDate);
-  const minutes = date.getUTCMinutes();
-  const seconds = date.getUTCSeconds();
-  return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-};
 
 // กำหนด Port ที่ Server จะใช้
 const port = 3003;
