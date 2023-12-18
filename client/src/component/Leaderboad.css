@@ -18,3 +18,8 @@
 .container-leader {
   margin-left: 25px;
 }
+
+p {
+  color: aliceblue;
+  font-weight: bold;
+}

@@ -19,7 +19,7 @@ function convertIsoDateToMinutesSeconds(isoDate) {
   }
 
   const formattedSeconds = remainingSeconds.replace(/^(\d+)\.(\d+)$/, "$1.$2");
-  const formattedTime = ` ${formattedSeconds} วินาที`;
+  const formattedTime = ` ${formattedSeconds} min/sec`;
 
   return formattedTime;
 }
@@ -145,6 +145,27 @@ app.get("/leaderboard", async (req, res) => {
     res.json(leaderboardData);
   } catch (error) {
     console.error("Error fetching leaderboard data:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// Add this endpoint to your Express server
+app.get("/bestTime/:name", async (req, res) => {
+  const { name } = req.params;
+
+  try {
+    // Find the user by name
+    const user = await RegisterModel.findOne({ name });
+
+    // If the user is found, return the best time
+    if (user && user.time) {
+      const formattedTime = convertIsoDateToMinutesSeconds(user.time);
+      res.json({ bestTime: formattedTime });
+    } else {
+      res.json({ bestTime: null }); // Return null if no best time is available
+    }
+  } catch (error) {
+    console.error("Error fetching best time:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });

@@ -27,10 +27,39 @@ const Board = (props) => {
     "Empty",
   ]);
   const [time, setTime] = useState(0);
-  const [score, setScore] = useState(0);
   const [rank, setRank] = useState([]);
   const [paused, setPaused] = useState(true);
-  const [winner, setWinner] = useState(false);
+  const [bestTime, setBestTime] = useState(null);
+
+  const startGame = () => {
+    setPaused(false);
+
+    if (time === 0) {
+      resetTime(); // Reset the time only if it's the start of the game
+    }
+  };
+
+  const pauseGame = () => {
+    setPaused(true);
+  };
+
+  useEffect(() => {
+    // Fetch best time when the component mounts
+    const fetchBestTime = async () => {
+      try {
+        const response = await fetch(`http://localhost:3003/bestTime/${name}`);
+        const data = await response.json();
+
+        if (data.bestTime) {
+          setBestTime(data.bestTime);
+        }
+      } catch (error) {
+        console.error("Error fetching best time:", error);
+      }
+    };
+
+    fetchBestTime();
+  }, [name]); // Fetch best time when the 'name' changes
 
   // สุ่มจัดเรียงรูป
   useEffect(() => {
@@ -52,10 +81,6 @@ const Board = (props) => {
     }
     return () => clearInterval(interval);
   }, [paused]);
-
-  const startGame = () => {
-    setPaused(false);
-  };
 
   const move = (clickedIndex) => {
     if (paused) {
@@ -192,6 +217,12 @@ const Board = (props) => {
     return inversions % 2 === 0;
   };
 
+  const restartGame = () => {
+    setPaused(true);
+    resetTime(); // Reset the time
+    shufflePuzzle(); // Shuffle the puzzle
+  };
+
   const convert = (value) => (value < 10 ? `0${value}` : value);
 
   return (
@@ -207,25 +238,54 @@ const Board = (props) => {
           <div className="timer">
             Time: {convert(Math.floor(time / 60))}:{convert(time % 60)}
           </div>
-          <div className="move-sum">
-            My best time: {convert(Math.floor(time / 60))}:{convert(time % 60)}
-          </div>
+
+          <div className="time-sum">My best time: {bestTime || "N/A"}</div>
         </header>
-        <div className="puzzle">
-          {puzzle.map((item, index) => (
-            <div
-              key={index}
-              className={`tile ${item === "Empty" ? "empty" : ""}`}
-              onClick={() => move(index)}
-            >
-              {item}
+        {paused ? (
+          // Render stopped puzzle board
+          <>
+            <div className="start" onClick={startGame}>
+              <img src="Start.png" width={330} height={110} />
             </div>
-          ))}
-        </div>
+            <div className="puzzle-stop">
+              {puzzle.map((item, index) => (
+                <div
+                  key={index}
+                  className={`tile ${item === "Empty" ? "empty" : ""}`}
+                  onClick={() => move(index)}
+                >
+                  {item}
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          // Render active puzzle board
+          <div className="puzzle">
+            {puzzle.map((item, index) => (
+              <div
+                key={index}
+                className={`tile ${item === "Empty" ? "empty" : ""}`}
+                onClick={() => move(index)}
+              >
+                {item}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* <div className="start">
+          <img src="Start.png" width={350} height={150} />
+        </div> */}
+
         {/* <button onClick={recordScore}>บันทึกคะแนน</button> */}
         <div className="container-button">
-          <button onClick={startGame}>Start</button>{" "}
-          <button onClick={startGame}>Restart</button>
+          {paused ? (
+            <button onClick={startGame}>Start</button>
+          ) : (
+            <button onClick={pauseGame}>Paused</button>
+          )}
+          <button onClick={restartGame}>Restart</button>
         </div>
       </div>
       <Leaderboard />

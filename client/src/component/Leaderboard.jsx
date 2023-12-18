@@ -24,6 +24,10 @@ const Leaderboard = () => {
   return (
     <div className="container-leader">
       <h1>Leader Board</h1>
+      <p>
+        00.010 = 10 second <br />
+        0.0607 = 6 minute 07 second
+      </p>
       <table className="table">
         <thead>
           <tr>
