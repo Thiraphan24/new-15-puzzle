@@ -1,0 +1,25 @@
+/* .container-lead {
+  background-color: aliceblue;
+  height: 400px;
+  width: 300px;
+  margin-left: 25px;
+} */
+
+.table {
+  height: 500px;
+  width: 350px;
+}
+
+.container-leader h1 {
+  color: aliceblue;
+  font-weight: bold;
+}
+
+.container-leader {
+  margin-left: 25px;
+}
+
+p {
+  color: aliceblue;
+  font-weight: bold;
+}
