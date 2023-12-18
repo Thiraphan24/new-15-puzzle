@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+require("dotenv").config();
 
 const app = express();
 app.use(cors());
@@ -25,10 +26,7 @@ function convertIsoDateToMinutesSeconds(isoDate) {
 }
 // การเชื่อมต่อ MongoDB
 mongoose
-  .connect("mongodb://127.0.0.1:27017/15Puzzle", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.MONGODB_URI)
   .then(() => {
     console.log("Connected to MongoDB");
   })
@@ -171,7 +169,9 @@ app.get("/bestTime/:name", async (req, res) => {
 });
 
 // กำหนด Port ที่ Server จะใช้
-const port = 3009;
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+// const port = 3003;
+
+const PORT = process.env.PORT;
+app.listen(PORT, () => {
+  console.log("Server is running on port" + PORT);
 });

@@ -47,7 +47,7 @@ const Board = (props) => {
     // Fetch best time when the component mounts
     const fetchBestTime = async () => {
       try {
-        const response = await fetch(`http://localhost:3003/bestTime/${name}`);
+        const response = await fetch(`http://localhost:8080/bestTime/${name}`);
         const data = await response.json();
 
         if (data.bestTime) {
@@ -154,7 +154,7 @@ const Board = (props) => {
 
     // Update the best time in the server
     try {
-      const response = await fetch("http://localhost:3003/updateBestTime", {
+      const response = await fetch("http://localhost:8080/updateBestTime", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
