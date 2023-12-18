@@ -7,5 +7,5 @@ const RegisterSchema = new mongoose.Schema({
   time: { type: Date, default: null },
 });
 
-const RegisterModel = mongoose.model("register", RegisterSchema);
+const RegisterModel = mongoose.model("registers", RegisterSchema);
 module.exports = RegisterModel;
