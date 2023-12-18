@@ -5,18 +5,24 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 app.use(express.json());
+function convertIsoDateToMinutesSeconds(isoDate) {
+  const timestamp = new Date(isoDate);
+  const milliseconds = timestamp.getTime();
+  const totalSeconds = milliseconds / 1000;
 
-const convertIsoDateToMinutesSeconds = (isoDate) => {
-  if (!isoDate) {
-    return "Invalid Time";
+  let remainingSeconds;
+
+  if (totalSeconds >= 0.06) {
+    remainingSeconds = (totalSeconds / 60).toFixed(5).padStart(6, "0");
+  } else if (totalSeconds < 0.06) {
+    remainingSeconds = (totalSeconds % 60).toFixed(3).padStart(6, "0");
   }
 
-  const date = new Date(isoDate);
-  const minutes = date.getUTCMinutes();
-  const seconds = date.getUTCSeconds();
-  return `${minutes}:${seconds < 10 ? "0" : ""}${seconds.toFixed(2)}`;
-};
+  const formattedSeconds = remainingSeconds.replace(/^(\d+)\.(\d+)$/, "$1.$2");
+  const formattedTime = ` ${formattedSeconds} วินาที`;
 
+  return formattedTime;
+}
 // การเชื่อมต่อ MongoDB
 mongoose
   .connect("mongodb://127.0.0.1:27017/15Puzzle", {
