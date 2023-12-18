@@ -171,7 +171,7 @@ app.get("/bestTime/:name", async (req, res) => {
 });
 
 // กำหนด Port ที่ Server จะใช้
-const port = 3003;
+const port = 3009;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
