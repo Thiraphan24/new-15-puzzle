@@ -92,81 +92,81 @@ app.post("/login", (req, res) => {
     });
 });
 
-// app.post("/updateBestTime", async (req, res) => {
-//   const { name, newBestTime } = req.body;
+app.post("/updateBestTime", async (req, res) => {
+  const { name, newBestTime } = req.body;
 
-//   try {
-//     // Find the user by name
-//     const user = await RegisterModel.findOne({ name });
+  try {
+    // Find the user by name
+    const user = await RegisterModel.findOne({ name });
 
-//     // If the user is found
-//     if (user) {
-//       // Convert current best time from ISODate to "mm:ss"
-//       const currentBestTime = user.time
-//         ? convertIsoDateToMinutesSeconds(user.time)
-//         : null;
+    // If the user is found
+    if (user) {
+      // Convert current best time from ISODate to "mm:ss"
+      const currentBestTime = user.time
+        ? convertIsoDateToMinutesSeconds(user.time)
+        : null;
 
-//       // If the new time is less than the current best time or the best time is null
-//       if (!user.time || newBestTime < user.time) {
-//         // Update the best time
-//         await RegisterModel.updateOne({ name }, { time: newBestTime });
-//         res.json({ message: "Best time updated successfully" });
-//       } else {
-//         res.json({
-//           message: `Best time not updated. New time (${newBestTime}) is not faster than current best time (${currentBestTime}).`,
-//         });
-//       }
-//     } else {
-//       res.status(404).json({ message: "User not found" });
-//     }
-//   } catch (error) {
-//     console.error("Error updating best time:", error);
-//     res.status(500).json({ message: "Internal Server Error" });
-//   }
-// });
+      // If the new time is less than the current best time or the best time is null
+      if (!user.time || newBestTime < user.time) {
+        // Update the best time
+        await RegisterModel.updateOne({ name }, { time: newBestTime });
+        res.json({ message: "Best time updated successfully" });
+      } else {
+        res.json({
+          message: `Best time not updated. New time (${newBestTime}) is not faster than current best time (${currentBestTime}).`,
+        });
+      }
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    console.error("Error updating best time:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 
-// // Add this endpoint to your Express server
-// app.get("/leaderboard", async (req, res) => {
-//   try {
-//     // Find users with non-null time, sort by time in ascending order
-//     const users = await RegisterModel.find({ time: { $ne: null } })
-//       .sort({ time: 1 })
-//       .limit(5); // Limit to top 5 users
+// Add this endpoint to your Express server
+app.get("/leaderboard", async (req, res) => {
+  try {
+    // Find users with non-null time, sort by time in ascending order
+    const users = await RegisterModel.find({ time: { $ne: null } })
+      .sort({ time: 1 })
+      .limit(5); // Limit to top 5 users
 
-//     // Format time as "mm:ss" and construct the response
-//     const leaderboardData = users.map((user, index) => ({
-//       rank: index + 1,
-//       name: user.name,
-//       time: convertIsoDateToMinutesSeconds(user.time),
-//     }));
+    // Format time as "mm:ss" and construct the response
+    const leaderboardData = users.map((user, index) => ({
+      rank: index + 1,
+      name: user.name,
+      time: convertIsoDateToMinutesSeconds(user.time),
+    }));
 
-//     res.json(leaderboardData);
-//   } catch (error) {
-//     console.error("Error fetching leaderboard data:", error);
-//     res.status(500).json({ message: "Internal Server Error" });
-//   }
-// });
+    res.json(leaderboardData);
+  } catch (error) {
+    console.error("Error fetching leaderboard data:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 
-// // Add this endpoint to your Express server
-// app.get("/bestTime/:name", async (req, res) => {
-//   const { name } = req.params;
+// Add this endpoint to your Express server
+app.get("/bestTime/:name", async (req, res) => {
+  const { name } = req.params;
 
-//   try {
-//     // Find the user by name
-//     const user = await RegisterModel.findOne({ name });
+  try {
+    // Find the user by name
+    const user = await RegisterModel.findOne({ name });
 
-//     // If the user is found, return the best time
-//     if (user && user.time) {
-//       const formattedTime = convertIsoDateToMinutesSeconds(user.time);
-//       res.json({ bestTime: formattedTime });
-//     } else {
-//       res.json({ bestTime: null }); // Return null if no best time is available
-//     }
-//   } catch (error) {
-//     console.error("Error fetching best time:", error);
-//     res.status(500).json({ message: "Internal Server Error" });
-//   }
-// });
+    // If the user is found, return the best time
+    if (user && user.time) {
+      const formattedTime = convertIsoDateToMinutesSeconds(user.time);
+      res.json({ bestTime: formattedTime });
+    } else {
+      res.json({ bestTime: null }); // Return null if no best time is available
+    }
+  } catch (error) {
+    console.error("Error fetching best time:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 
 // กำหนด Port ที่ Server จะใช้
 // const port = 3003;

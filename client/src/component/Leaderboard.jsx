@@ -7,7 +7,7 @@ const Leaderboard = () => {
   const [leaderboard, setLeaderboard] = useState([]);
 
   useEffect(() => {
-    fetch("/leaderboard")
+    fetch("http://localhost:8080/leaderboard")
       .then((response) => response.json())
       .then((data) => {
         // Check if data is an array

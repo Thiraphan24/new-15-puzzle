@@ -14,7 +14,7 @@ function Register() {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("/register", { name, email, password, time })
+      .post("http://localhost:8080/register", { name, email, password, time })
       .then((result) => {
         console.log(result);
         // Redirect to the login page after successful registration
